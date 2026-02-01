@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be My Valentine?</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #ffeef2;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        h1 { color: #d63384; font-size: 2.5rem; margin-bottom: 10px; z-index: 10; }
+        
+        #countdown {
+            font-size: 1.2rem;
+            color: #ff4d6d;
+            margin-bottom: 30px;
+            font-weight: bold;
+            z-index: 10;
+        }
+
+        .container { position: relative; z-index: 10; height: 100px; width: 100%; display: flex; justify-content: center; align-items: center; }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin: 0 10px;
+        }
+
+        #yesBtn { background-color: #ff4d6d; color: white; z-index: 11; }
+        #noBtn { background-color: #adb5bd; color: white; position: absolute; transition: 0.1s; }
+
+        .success-message { display: none; color: #d63384; font-size: 4rem; z-index: 20; animation: heartBeat 1.5s infinite; }
+
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .balloon {
+            position: absolute;
+            bottom: -100px;
+            width: 40px;
+            height: 55px;
+            background: rgba(255, 77, 109, 0.7);
+            border-radius: 50%;
+            animation: floatUp 6s linear infinite;
+        }
+
+        .balloon::before { /* The little triangle at the bottom of the balloon */
+            content: "▲";
+            position: absolute;
+            bottom: -10px;
+            left: 12px;
+            font-size: 12px;
+            color: rgba(255, 77, 109, 0.7);
+        }
+
+        @keyframes floatUp {
+            to { transform: translateY(-120vh) translateX(30px); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="mainContent">
+        <h1>Piyu, Will you be my Valentine? ❤️</h1>
+        <div id="countdown">Loading countdown...</div>
+        <div class="container">
+            <button id="yesBtn">YES!</button>
+            <button id="noBtn">No</button>
+        </div>
+    </div>
+
+    <div id="yayText" class="success-message">YAY! ❤️<br><span style="font-size: 1.5rem;">Best. Valentine. Ever.</span></div>
+
+    <audio id="loveSong" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const mainContent = document.getElementById('mainContent');
+        const yayText = document.getElementById('yayText');
+        const loveSong = document.getElementById('loveSong');
+
+        // 1. Countdown Logic
+        function updateCountdown() {
+            const now = new Date();
+            const year = now.getFullYear();
+            let valentine = new Date(year, 1, 14); // Feb is index 1
+            if (now > valentine) valentine = new Date(year + 1, 1, 14);
+
+            const diff = valentine - now;
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const mins = Math.floor((diff / 1000 / 60) % 60);
+            const secs = Math.floor((diff / 1000) % 60);
+
+            document.getElementById('countdown').innerHTML = 
+                `${days}d ${hours}h ${mins}m ${secs}s until Valentine's Day`;
+        }
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // 2. The "No" button escape
+        noBtn.addEventListener('mouseover', () => {
+            const x = Math.random() * (window.innerWidth - 100);
+            const y = Math.random() * (window.innerHeight - 50);
+            noBtn.style.left = `${x}px`;
+            noBtn.style.top = `${y}px`;
+        });
+
+        // 3. Success Logic
+        yesBtn.addEventListener('click', () => {
+            mainContent.style.display = 'none';
+            yayText.style.display = 'block';
+            loveSong.play(); // Starts the music
+            
+            confetti({
+                particleCount: 200,
+                spread: 100,
+                origin: { y: 0.6 },
+                colors: ['#ff4d6d', '#ff8fa3', '#ffb3c1']
+            });
+
+            setInterval(createBalloon, 250);
+        });
+
+        function createBalloon() {
+            const balloon = document.createElement('div');
+            balloon.className = 'balloon';
+            balloon.style.left = Math.random() * 100 + 'vw';
+            // Random pink/red shades
+            const colors = ['#ff4d6d', '#ff758f', '#ff8fa3', '#c9184a'];
+            balloon.style.background = colors[Math.floor(Math.random() * colors.length)];
+            document.body.appendChild(balloon);
+            setTimeout(() => balloon.remove(), 6000);
+        }
+    </script>
+</body>
+</html>
