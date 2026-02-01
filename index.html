@@ -6,18 +6,6 @@
     <title>Be My Valentine?</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
-        :root {
-            --bg-color: #ffeef2;
-            --text-color: #d63384;
-            --btn-no: #adb5bd;
-        }
-
-        body.dark-mode {
-            --bg-color: #1a1a1a;
-            --text-color: #ff8fa3;
-            --btn-no: #444;
-        }
-
         body {
             margin: 0;
             height: 100vh;
@@ -25,38 +13,23 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: 'Segoe UI', sans-serif;
+            background-color: #ffeef2;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow: hidden;
             text-align: center;
-            transition: background-color 0.3s, color 0.3s;
         }
 
-        /* Dark Mode Toggle */
-        #themeToggle {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: none;
-            border: 2px solid var(--text-color);
-            color: var(--text-color);
-            border-radius: 20px;
-            padding: 5px 15px;
-            cursor: pointer;
-            z-index: 100;
+        h1 { color: #d63384; font-size: 2.5rem; margin-bottom: 10px; z-index: 10; }
+        
+        #countdown {
+            font-size: 1.2rem;
+            color: #ff4d6d;
+            margin-bottom: 30px;
+            font-weight: bold;
+            z-index: 10;
         }
 
-        h1 { font-size: 2.5rem; margin-bottom: 10px; z-index: 10; }
-        #countdown { font-size: 1.1rem; margin-bottom: 30px; font-weight: bold; z-index: 10; opacity: 0.8; }
-
-        .container { 
-            position: relative; 
-            z-index: 10; 
-            width: 100%; 
-            max-width: 400px;
-            height: 150px; /* Space for the button to move */
-        }
+        .container { position: relative; z-index: 10; height: 100px; width: 100%; display: flex; justify-content: center; align-items: center; }
 
         button {
             padding: 15px 30px;
@@ -65,25 +38,18 @@
             border-radius: 50px;
             cursor: pointer;
             transition: transform 0.2s;
+            margin: 0 10px;
         }
 
-        #yesBtn { background-color: #ff4d6d; color: white; position: relative; }
-        
-        /* The No Button - now positioned so it's visible initially */
-        #noBtn { 
-            background-color: var(--btn-no); 
-            color: white; 
-            position: absolute; 
-            left: 60%; /* Offset from the Yes button */
-            transition: 0.15s ease-out; 
-            white-space: nowrap;
-        }
+        #yesBtn { background-color: #ff4d6d; color: white; z-index: 11; }
+        #noBtn { background-color: #adb5bd; color: white; position: absolute; transition: 0.1s; }
 
-        .success-message { display: none; font-size: 3.5rem; z-index: 20; animation: heartBeat 1.5s infinite; }
+        .success-message { display: none; color: #d63384; font-size: 4rem; z-index: 20; animation: heartBeat 1.5s infinite; }
 
         @keyframes heartBeat {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
 
         .balloon {
@@ -91,64 +57,4 @@
             bottom: -100px;
             width: 40px;
             height: 55px;
-            border-radius: 50%;
-            animation: floatUp 6s linear infinite;
-        }
-
-        @keyframes floatUp {
-            to { transform: translateY(-120vh) translateX(30px); opacity: 0; }
-        }
-    </style>
-</head>
-<body id="body">
-
-    <button id="themeToggle">Toggle Dark Mode</button>
-
-    <div id="mainContent">
-        <h1>Will you be my Valentine? ❤️</h1>
-        <div id="countdown">Loading...</div>
-        <div class="container">
-            <button id="yesBtn">YES!</button>
-            <button id="noBtn">No</button>
-        </div>
-    </div>
-
-    <div id="yayText" class="success-message">YAY! ❤️<br><span style="font-size: 1.5rem;">See you on the 14th!</span></div>
-
-    <audio id="loveSong" loop>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-    </audio>
-
-    <script>
-        const noBtn = document.getElementById('noBtn');
-        const yesBtn = document.getElementById('yesBtn');
-        const body = document.getElementById('body');
-        const themeToggle = document.getElementById('themeToggle');
-
-        // Dark Mode Toggle
-        themeToggle.addEventListener('click', () => {
-            body.classList.toggle('dark-mode');
-        });
-
-        // Runaway Button Logic (Mouse and Touch)
-        function moveNoButton() {
-            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
-            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
-            noBtn.style.left = `${x}px`;
-            noBtn.style.top = `${y}px`;
-        }
-
-        noBtn.addEventListener('mouseover', moveNoButton);
-        noBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault(); 
-            moveNoButton();
-        });
-
-        // Countdown Logic
-        function updateCountdown() {
-            const now = new Date();
-            let valentine = new Date(now.getFullYear(), 1, 14);
-            if (now > valentine) valentine = new Date(now.getFullYear() + 1, 1, 14);
-            const diff = valentine - now;
-            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const
+            background: rgba(25
