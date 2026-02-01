@@ -5,7 +5,6 @@
   <title>Be My Valentine 💖</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Confetti -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <style>
@@ -32,18 +31,16 @@
     h1 {
       font-size: 2.3rem;
       color: #e63946;
-      margin-bottom: 0.5rem;
     }
 
     #countdown {
-      font-size: 1.2rem;
-      margin-bottom: 1.5rem;
+      margin: 1rem 0;
       color: #555;
     }
 
     .buttons {
       position: relative;
-      height: 130px;
+      height: 140px;
       margin-top: 1rem;
     }
 
@@ -64,8 +61,6 @@
       background-color: #e63946;
       color: white;
       position: absolute;
-      left: 120px;
-      top: 0;
     }
 
     #yay {
@@ -78,95 +73,87 @@
 </head>
 <body>
 
-  <div class="container">
-    <h1 id="question"></h1>
-    <div id="countdown"></div>
+<div class="container">
+  <h1 id="question"></h1>
+  <div id="countdown"></div>
 
-    <div class="buttons">
-      <button id="yesBtn">Yes 💖</button>
-      <button id="noBtn">No? 😏</button>
-    </div>
-
-    <div id="yay">YAYYYY!!! 🎉💖</div>
+  <div class="buttons" id="buttonArea">
+    <button id="yesBtn">Yes 💖</button>
+    <button id="noBtn">Are you sure? 😏</button>
   </div>
 
-  <!-- Romantic music -->
-  <audio id="music" loop>
-    <source src="https://cdn.pixabay.com/audio/2023/02/14/audio_55c36a8f70.mp3" type="audio/mpeg">
-  </audio>
+  <div id="yay">YAYYYY!!! 🎉💖</div>
+</div>
 
-  <script>
-    // ---- Dynamic Name ----
-    const params = new URLSearchParams(window.location.search);
-    const name = params.get("name") || "My Love";
-    document.getElementById("question").textContent =
-      `Piyu, will you be my Valentine? 💘`;
+<audio id="music" loop>
+  <source src="https://cdn.pixabay.com/audio/2023/02/14/audio_55c36a8f70.mp3" type="audio/mpeg">
+</audio>
 
-    // ---- Countdown ----
-    const countdownEl = document.getElementById("countdown");
+<script>
+  // ---- Dynamic Name ----
+  const params = new URLSearchParams(window.location.search);
+  const name = params.get("name") || "My Love";
+  document.getElementById("question").textContent =
+    `${name}, will you be my Valentine? 💘`;
 
-    function updateCountdown() {
-      const now = new Date();
-      let valentines = new Date(now.getFullYear(), 1, 14);
+  // ---- Countdown ----
+  function updateCountdown() {
+    const now = new Date();
+    let vDay = new Date(now.getFullYear(), 1, 14);
+    if (now > vDay) vDay.setFullYear(vDay.getFullYear() + 1);
 
-      if (now > valentines) {
-        valentines.setFullYear(valentines.getFullYear() + 1);
-      }
+    const diff = vDay - now;
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor(diff / 3600000) % 24;
+    const m = Math.floor(diff / 60000) % 60;
+    const s = Math.floor(diff / 1000) % 60;
 
-      const diff = valentines - now;
+    document.getElementById("countdown").textContent =
+      `Valentine’s Day is in ${d}d ${h}h ${m}m ${s}s 💕`;
+  }
+  setInterval(updateCountdown, 1000);
+  updateCountdown();
 
-      const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
-      const m = Math.floor((diff / (1000 * 60)) % 60);
-      const s = Math.floor((diff / 1000) % 60);
+  // ---- Button positioning ----
+  const noBtn = document.getElementById("noBtn");
+  const yesBtn = document.getElementById("yesBtn");
+  const area = document.getElementById("buttonArea");
 
-      countdownEl.textContent =
-        `Valentine’s Day is in ${d}d ${h}h ${m}m ${s}s 💕`;
-    }
+  function resetNoButton() {
+    const yesRect = yesBtn.getBoundingClientRect();
+    const areaRect = area.getBoundingClientRect();
 
-    setInterval(updateCountdown, 1000);
-    updateCountdown();
+    noBtn.style.left = (yesRect.right - areaRect.left + 10) + "px";
+    noBtn.style.top = (yesRect.top - areaRect.top) + "px";
+  }
 
-    // ---- No Button Escape ----
-    const noBtn = document.getElementById("noBtn");
-    const container = document.querySelector(".buttons");
+  window.onload = resetNoButton;
+  window.onresize = resetNoButton;
 
-    function moveNoButton() {
-      const maxX = container.clientWidth - noBtn.offsetWidth;
-      const maxY = container.clientHeight - noBtn.offsetHeight;
+  // ---- Escape logic ----
+  function moveNoButton() {
+    const maxX = area.clientWidth - noBtn.offsetWidth;
+    const maxY = area.clientHeight - noBtn.offsetHeight;
 
-      noBtn.style.left = Math.random() * maxX + "px";
-      noBtn.style.top = Math.random() * maxY + "px";
-    }
+    noBtn.style.left = Math.random() * maxX + "px";
+    noBtn.style.top = Math.random() * maxY + "px";
+  }
 
-    noBtn.addEventListener("mouseover", moveNoButton);
-    noBtn.addEventListener("touchstart", e => {
-      e.preventDefault();
-      moveNoButton();
-    });
+  noBtn.addEventListener("mouseover", moveNoButton);
+  noBtn.addEventListener("touchstart", e => {
+    e.preventDefault();
+    moveNoButton();
+  });
 
-    // ---- Yes Button ----
-    const music = document.getElementById("music");
+  // ---- Yes celebration ----
+  document.getElementById("yesBtn").addEventListener("click", () => {
+    document.getElementById("yay").style.display = "block";
+    document.getElementById("music").play();
 
-    document.getElementById("yesBtn").addEventListener("click", () => {
-      document.getElementById("yay").style.display = "block";
-      music.play();
-
-      confetti({
-        particleCount: 180,
-        spread: 100,
-        origin: { y: 0.6 }
-      });
-
-      setTimeout(() => {
-        confetti({
-          particleCount: 250,
-          spread: 140,
-          origin: { y: 0.4 }
-        });
-      }, 600);
-    });
-  </script>
+    confetti({ particleCount: 200, spread: 120 });
+    setTimeout(() => confetti({ particleCount: 300, spread: 160 }), 600);
+  });
+</script>
 
 </body>
 </html>
